@@ -1,0 +1,44 @@
+    ax_2=G_draw(G_bus,figsize=(30, 30*2),edge_color=edge_color_,labels=nx.get_node_attributes(G_bus_stations,'station_name'),font_size=20)   
+    nx.draw_networkx_nodes(G_start_stops,pos=pos,node_size=100,ax=ax_2,node_color='red')  
+    trans_nodes=list(G_bus_transfer.nodes)
+    sub_num=500
+    sub_trans_nodes=[trans_nodes[i:i+sub_num] for i in range(0,len(trans_nodes),sub_num)]  
+    for sub in tqdm(sub_trans_nodes):
+        trans_sub=G_bus_transfer.subgraph(sub)        
+        pos_edge=nx.get_node_attributes(trans_sub,'position')
+        nx.draw_networkx_edges(trans_sub,pos=pos_edge,edge_color='red',ax=ax_2) #edgelist=trans_sub.edges,
+        break
+        
+
+    a=list(G_bus_transfer.nodes)
+    S=G_bus_transfer.subgraph(a[:1000])
+    p=nx.get_node_attributes(S,'position')
+    # p_={k:[v/10000 for v in val] for k,val in p.items()}
+    nx.draw_networkx_edges(S, pos=p,edgelist=S.edges)
+
+    
+    u=G_draw(G_bus_transfer,figsize=(30, 30*2),font_size=20) 
+    for sub in tqdm(sub_trans_nodes):
+        S=G_bus_transfer.subgraph(sub)  
+        # u=G_draw(S,figsize=(30, 30*2),font_size=20)         
+        pp=nx.get_node_attributes(S,'position')
+        nx.draw_networkx_edges(S,pos=pp,edge_color='red',ax=u)
+        # break
+        
+    
+    u=G_draw(G_bus_transfer,figsize=(30, 30*2),font_size=20)   
+    pp_=nx.get_node_attributes(G_bus_transfer,'position')
+    nx.draw_networkx_edges(G_bus_transfer,pos=pp_,edge_color='red',ax=u)
+	
+	
+	
+    ax_2=G_draw(G_bus,figsize=(30, 30*2),edge_color=edge_color_,labels=nx.get_node_attributes(G_bus_stations,'station_name'),font_size=20 )   
+    nx.draw_networkx_nodes(G_start_stops,pos=pos,node_size=100,ax=ax_2,node_color='red')  
+    trans_nodes=list(G_bus_transfer.nodes)
+    sub_num=1000
+    sub_trans_nodes=[trans_nodes[i:i+sub_num] for i in range(0,len(trans_nodes),sub_num)]  
+    for sub in tqdm(sub_trans_nodes):
+        trans_sub=G_bus_transfer.subgraph(sub)        
+        pos_edge=nx.get_node_attributes(trans_sub,'position')
+        nx.draw_networkx_edges(trans_sub,pos=pos_edge,edge_color='red',ax=ax_2) #edgelist=trans_sub.edges,
+        break 
