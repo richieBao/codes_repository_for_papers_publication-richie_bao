@@ -10,6 +10,8 @@ from tqdm import tqdm
 import pyproj
 import pandas as pd
 
+#CREATE EXTENSION postgis;
+
 nanjing_epsg=32650 #Nanjing
 data_dic={
     'bus_routes':r'./data/bus route and station/bus_routes.shp',
@@ -18,7 +20,8 @@ data_dic={
     'subway_stations':r'./data/subway station and line/subway_stations.shp',
     'population':r'./data/population/population.shp',
     'comprehensive_park':r'./data/NanjingParks.kml',
-    'region':r'./data/region/region.shp'
+    'region':r'./data/region/region.shp',
+    'administrative_districts':r'./data/Nanjing administrative districts/Nanjing administrative districts.shp'
     }
 
 def gpd2postSQL(gdf,table_name,**kwargs):
@@ -223,18 +226,46 @@ def adjacent_stations(comprehensive_park,stations,buffer_distance=200):
     comprehensivePark_adjacentStations.drop(['geo_park'],axis=1,inplace=True)
     return comprehensivePark_adjacentStations,comprehensivePark_buffer
 
+def administrative_countryName_translation(administrative_districts_):
+    import copy
+    import geopandas as gpd
+    
+    administrative_districts=copy.deepcopy(administrative_districts_)
+    administrative_districts.countyname=administrative_districts.countyname.apply(lambda row:row.strip())
+    name_mapping={
+            '玄武区':'Xuanwu District', 
+            '白下区':'Baixia District', 
+            '建邺区':'Jianye District', 
+            '下关区':'Xiaguan District', 
+            '栖霞区':'Qixia District', 
+            '六合区':'Liuhe District', 
+            '鼓楼区':'Gulou District', 
+            '秦淮区':'Qianhuai District', 
+            '浦口区':'Pukou District',
+            '雨花台区':'Yuhuatai District', 
+            '江宁区':'Jiangning District', 
+            '溧水县':'Lishui Country', 
+            '高淳县':'Gaochun Country',        
+        }
+    administrative_districts['countyname_EN']=administrative_districts['countyname'].map(name_mapping)
+    administrative_districts.drop(['gml_id', 'id', 'xzdm', 'Name',],inplace=True,axis=1)
+    aggregation_functions={'fldm':'first',  'area':'sum', 'cityname':'first', 'citycode':'first','countyname':'first', 'countycode':'first', 'province':'first', 'prvcode':'first', '人口密':'sum', 'countyname_EN':'first'}
+    administrative_districts_dissolve=administrative_districts.dissolve(by='countyname_EN',aggfunc=aggregation_functions)
+    return administrative_districts_dissolve
+
+
 if __name__=="__main__":
     #region
     region=shp2gdf(data_dic['region'],epsg=nanjing_epsg,boundary=None,encoding='GBK')
     region.plot()   
-    # gpd2postSQL(region,table_name='region',myusername='postgres',mypassword='123456',mydatabase='public_transport_accessibility')    
+    gpd2postSQL(region,table_name='region',myusername='postgres',mypassword='123456',mydatabase='public_transport_accessibility')    
     
-    '''
+    
     #comprehensive park
     comprehensive_park=kml2gdf_folder(data_dic['comprehensive_park'],epsg=nanjing_epsg,boundary=None) 
     gpd2postSQL(comprehensive_park,table_name='comprehensive_park',myusername='postgres',mypassword='123456',mydatabase='public_transport_accessibility')
     
-    # #CH->EN
+    # CH->EN
     comprehensive_park_EN=parkName_translation(comprehensive_park)
     gpd2postSQL(comprehensive_park_EN,table_name='comprehensive_park_en',myusername='postgres',mypassword='123456',mydatabase='public_transport_accessibility') #Only lowercase fields are accepted.
 
@@ -269,7 +300,14 @@ if __name__=="__main__":
     gpd2postSQL(comprehensivePark_buffer,table_name='park_buffer',myusername='postgres',mypassword='123456',mydatabase='public_transport_accessibility')
 
     #population
-    # population=shp2gdf(data_dic['population'],epsg=nanjing_epsg,boundary=None,encoding='GBK')
-    # population.plot(column='Population',cmap='hot')
-    # gpd2postSQL(population,table_name='population',myusername='postgres',mypassword='123456',mydatabase='public_transport_accessibility')   
-    '''
+    population=shp2gdf(data_dic['population'],epsg=nanjing_epsg,boundary=None,encoding='GBK')
+    population.plot(column='Population',cmap='hot')
+    gpd2postSQL(population,table_name='population',myusername='postgres',mypassword='123456',mydatabase='public_transport_accessibility')   
+    
+    administrative_districts=shp2gdf(data_dic['administrative_districts'],epsg=nanjing_epsg,boundary=None,encoding='GBK')
+    administrative_districts.plot()
+    gpd2postSQL(administrative_districts,table_name='administrative_districts',myusername='postgres',mypassword='123456',mydatabase='public_transport_accessibility')
+    
+    administrative_districts_EN=administrative_countryName_translation(administrative_districts)
+    administrative_districts_EN.plot()
+    gpd2postSQL(administrative_districts_EN,table_name='admin_distr_en',myusername='postgres',mypassword='123456',mydatabase='public_transport_accessibility')
