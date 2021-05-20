@@ -6,6 +6,7 @@ Created on Tue Mar 30 14:49:39 2021
 """
 
 from database import postSQL2gpd
+from scipy import stats
 
 
 def df_print(df,columns,sort_by,x_idx,new_legend,figsize,normalize=True):
@@ -58,3 +59,7 @@ if __name__=="__main__":
     df_print(adjacent_stations,['adjacent_perimeterRatio','adjacent_areaRatio',],sort_by=['adjacent_perimeterRatio'],x_idx=['Name_EN','adjacent_num'],
              new_legend=['Number of stations in the vicinity/park perimeter','Number of stations in the vicinity/park area',],figsize=(15,15),normalize=True) #'adjacent_areaRatio',
     #'adjacent_num';'Normalization of the parks number'
+    
+    print(stats.pearsonr(adjacent_stations['adjacent_num'],adjacent_stations['park_perimeter']))
+    print(stats.pearsonr(adjacent_stations['adjacent_num'],adjacent_stations['park_area']))
+    print(stats.pearsonr(adjacent_stations['park_perimeter'],adjacent_stations['park_area']))

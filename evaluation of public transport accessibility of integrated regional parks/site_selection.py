@@ -150,10 +150,10 @@ def Gini2gpd(gini_updated_dict,cell_pt2station_map,epsg):
 if __name__=="__main__":
     # G_SB=nx.read_gpickle("./network/G_SB.gpickle") 
     # station2park_tc_stats_gdf=postSQL2gpd(table_name='station2park_tc_stats',geom_col='geometry',myusername='postgres',mypassword='123456',mydatabase='public_transport_accessibility')
-    # region=postSQL2gpd(table_name='region',myusername='postgres',mypassword='123456',mydatabase='public_transport_accessibility')    
+    region=postSQL2gpd(table_name='region',myusername='postgres',mypassword='123456',mydatabase='public_transport_accessibility')    
 
-    # cell_pts=grid_pts(region.geometry[0],2000,nanjing_epsg)
-    # cell_pts.plot()
+    cell_pts=grid_pts(region.geometry[0],2000,nanjing_epsg)
+    cell_pts.plot()
     # print('\n cell_pts num=',cell_pts.shape)
     # update_shortest_length_dict,cell_pt2station_map=cell_pts_shortest_path(G_SB,cell_pts)   #update_shortest_path_dict,  
     # with open('./processed data/update_shortest_length_dict.pkl','wb') as f:
@@ -165,19 +165,19 @@ if __name__=="__main__":
 
     # with open('./processed data/update_shortest_length_dict.pkl','rb') as f:
     #     update_shortest_length_dict=pickle.load(f)
-    with open('./processed data/cell_pt2station_map.pkl','rb') as f:
-        cell_pt2station_map=pickle.load(f)        
+    # with open('./processed data/cell_pt2station_map.pkl','rb') as f:
+    #     cell_pt2station_map=pickle.load(f)        
         
     # with open('./processed data/park_shortest_path.pkl','rb') as f:
     #     park_shortest_path=pickle.load(f)
     # gini_updated_dict=Gini_update_pool(park_shortest_path,update_shortest_length_dict,G_SB,nanjing_epsg,'mean')  
     
-    with open('./processed data/gini_updated.pkl','rb') as f:
-        gini_updated_dict=pickle.load(f)      
-    gini_updated_gdf=Gini2gpd(gini_updated_dict,cell_pt2station_map,nanjing_epsg)    
-    gini_updated_gdf.plot(column='gini')
+    # with open('./processed data/gini_updated.pkl','rb') as f:
+    #     gini_updated_dict=pickle.load(f)      
+    # gini_updated_gdf=Gini2gpd(gini_updated_dict,cell_pt2station_map,nanjing_epsg)    
+    # gini_updated_gdf.plot(column='gini')
     
-    gpd2postSQL(gini_updated_gdf,table_name='gini_updated',myusername='postgres',mypassword='123456',mydatabase='public_transport_accessibility')
+    # gpd2postSQL(gini_updated_gdf,table_name='gini_updated',myusername='postgres',mypassword='123456',mydatabase='public_transport_accessibility')
 
 
 

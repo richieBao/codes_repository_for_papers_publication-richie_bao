@@ -56,7 +56,7 @@ def population_flowOverNetwork(G_SB,population,park_shortest_path):
         
         # print(population_flow) 
         population_flow['tc_weight']=population_flow.time_cost.apply(lambda row:1-(row-tc_min)/(tc_max-tc_min))
-        population_flow['Gaussian_weight']=population_flow.time_cost.apply(lambda row:1-norm.cdf(row,loc=tc_mean,scale=tc_std))
+        population_flow['Gaussian_weight']=population_flow.time_cost.apply(lambda row:1-norm.cdf(row,loc=tc_mean,scale=tc_std)) #norm.sf(x, loc=0, scale=1)=1-cdf
         population_flow['population_Gweighted']=population_flow.apply(lambda row:int(row.Population)*row.Gaussian_weight,axis=1)
         # break
         population_flow_dict[park]=population_flow
@@ -94,18 +94,18 @@ def populationWeighted_adjacentStations(population_flow_dict,G_SB,epsg,comprehen
 
 if __name__=="__main__":
     # comprehensivePark_adjacentStations=postSQL2gpd(table_name='adjacent_stations',geom_col='geometry',myusername='postgres',mypassword='123456',mydatabase='public_transport_accessibility')
-    # population=postSQL2gpd(table_name='population',geom_col='geometry',myusername='postgres',mypassword='123456',mydatabase='public_transport_accessibility')
-    G_SB=nx.read_gpickle("./network/G_SB.gpickle") 
+    population=postSQL2gpd(table_name='population',geom_col='geometry',myusername='postgres',mypassword='123456',mydatabase='public_transport_accessibility')
+    # G_SB=nx.read_gpickle("./network/G_SB.gpickle") 
     # with open('./processed data/park_shortest_path.pkl','rb') as f:
     #     park_shortest_path=pickle.load(f)
     # population_flow_dict=population_flowOverNetwork(G_SB,population,park_shortest_path)    
     
-    comprehensive_park_en=postSQL2gpd(table_name='comprehensive_park_en',geom_col='geometry',myusername='postgres',mypassword='123456',mydatabase='public_transport_accessibility')    
+    # comprehensive_park_en=postSQL2gpd(table_name='comprehensive_park_en',geom_col='geometry',myusername='postgres',mypassword='123456',mydatabase='public_transport_accessibility')    
     with open('./processed data/population_flow_dict.pkl','rb') as f:
         population_flow_dict=pickle.load(f)
-    populationWeighted_adjacentStations_dict,populationWeighted_adjacentStations_stack_gdf,comprehensive_park_en=populationWeighted_adjacentStations(population_flow_dict,G_SB,nanjing_epsg,comprehensive_park_en)  
-    gpd2postSQL(populationWeighted_adjacentStations_stack_gdf,table_name='adja_popu',myusername='postgres',mypassword='123456',mydatabase='public_transport_accessibility')   
-    gpd2postSQL(comprehensive_park_en,table_name='comprehensive_park_en',myusername='postgres',mypassword='123456',mydatabase='public_transport_accessibility') #Only lowercase fields are accepted.
+    # populationWeighted_adjacentStations_dict,populationWeighted_adjacentStations_stack_gdf,comprehensive_park_en=populationWeighted_adjacentStations(population_flow_dict,G_SB,nanjing_epsg,comprehensive_park_en)  
+    # gpd2postSQL(populationWeighted_adjacentStations_stack_gdf,table_name='adja_popu',myusername='postgres',mypassword='123456',mydatabase='public_transport_accessibility')   
+    # gpd2postSQL(comprehensive_park_en,table_name='comprehensive_park_en',myusername='postgres',mypassword='123456',mydatabase='public_transport_accessibility') #Only lowercase fields are accepted.
 
     
         

@@ -214,6 +214,7 @@ if __name__=="__main__":
     subway_stations=postSQL2gpd(table_name='subway_stations',geom_col='geometry',myusername='postgres',mypassword='123456',mydatabase='public_transport_accessibility')
     subway_routes=postSQL2gpd(table_name='subway_lines',geom_col='geometry',myusername='postgres',mypassword='123456',mydatabase='public_transport_accessibility')
     
+    '''
     #A-bus network       
     G_bus_stations,s_e_nodes,lines_df4G=bus_network(bus_stations,bus_routes,speed=35) 
     G_bus_stations.remove_edges_from(s_e_nodes)
@@ -255,7 +256,7 @@ if __name__=="__main__":
     
     pos_subway=nx.get_node_attributes(G_subway_stations,'position')
     nx.draw_networkx_edges(G_subway_stations,pos=pos_subway,edgelist=G_subway_stations.edges,edge_color='orange',width=10,ax=ax) 
-    
+    '''
 
     
     

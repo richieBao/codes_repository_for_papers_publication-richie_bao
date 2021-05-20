@@ -340,11 +340,11 @@ if __name__=="__main__":
     # park_station_shortestPaths(shortestPaths_fn_lst,nanjing_epsg)
     # gpd2postSQL(a,table_name='temp',myusername='postgres',mypassword='123456',mydatabase='public_transport_accessibility')    
     
-    # comprehensive_park_en=postSQL2gpd(table_name='comprehensive_park_en',geom_col='geometry',myusername='postgres',mypassword='123456',mydatabase='public_transport_accessibility')
-    # with open('./processed data/park_shortest_path.pkl','rb') as f:
-    #     park_shortest_path=pickle.load(f)
+    comprehensive_park_en=postSQL2gpd(table_name='comprehensive_park_en',geom_col='geometry',myusername='postgres',mypassword='123456',mydatabase='public_transport_accessibility')
+    with open('./processed data/park_shortest_path.pkl','rb') as f:
+        park_shortest_path=pickle.load(f)
         
-    # stats,comprehensive_park_en_timecost=stats_shortest_length(park_shortest_path,comprehensive_park_en)
+    stats,comprehensive_park_en_timecost=stats_shortest_length(park_shortest_path,comprehensive_park_en)
     # gpd2postSQL(comprehensive_park_en_timecost,table_name='comprehensive_park_en',myusername='postgres',mypassword='123456',mydatabase='public_transport_accessibility')
 
     #service area levels
@@ -356,7 +356,7 @@ if __name__=="__main__":
         
     # with open('./processed data/park_serviceArea_level.pkl','rb') as f:
     #     park_serviceArea_level=pickle.load(f)    
-    with open('./processed data/park_serviceArea_level_fre.pkl','rb') as f:
-        park_serviceArea_level_fre=pickle.load(f)   
+    # with open('./processed data/park_serviceArea_level_fre.pkl','rb') as f:
+    #     park_serviceArea_level_fre=pickle.load(f)   
     
-    multiple_line_graph_separated(copy.deepcopy(park_serviceArea_level_fre))
+    # multiple_line_graph_separated(copy.deepcopy(park_serviceArea_level_fre))
